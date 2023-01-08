@@ -24,7 +24,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	interviewcomv1alpha1 "github.com/piyush1146115/dummy-operator/api/v1alpha1"
+	dummyapi "github.com/piyush1146115/dummy-operator/api/v1alpha1"
 )
 
 // DummyReconciler reconciles a Dummy object
@@ -47,9 +47,13 @@ type DummyReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.13.1/pkg/reconcile
 func (r *DummyReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	_ = log.FromContext(ctx)
+	logger := log.FromContext(ctx)
 
-	// TODO(user): your logic here
+	dum := &dummyapi.Dummy{}
+	if err := r.Client.Get(ctx, req.NamespacedName, dum); err != nil {
+		logger.Error(err, "failed to get Dummy")
+		return ctrl.Result{}, client.IgnoreNotFound(err)
+	}
 
 	return ctrl.Result{}, nil
 }
@@ -57,6 +61,6 @@ func (r *DummyReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 // SetupWithManager sets up the controller with the Manager.
 func (r *DummyReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&interviewcomv1alpha1.Dummy{}).
+		For(&dummyapi.Dummy{}).
 		Complete(r)
 }
