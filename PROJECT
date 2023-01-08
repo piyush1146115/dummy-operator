@@ -1,0 +1,15 @@
+domain: interview.com
+layout:
+- go.kubebuilder.io/v4-alpha
+projectName: dummy-operator
+repo: github.com/piyush1146115/dummy-operator
+resources:
+- api:
+    crdVersion: v1
+    namespaced: true
+  controller: true
+  domain: interview.com
+  kind: Dummy
+  path: github.com/piyush1146115/dummy-operator/api/v1alpha1
+  version: v1alpha1
+version: "3"
