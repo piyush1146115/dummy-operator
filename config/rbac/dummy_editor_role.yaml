@@ -29,3 +29,16 @@ rules:
   - dummies/status
   verbs:
   - get
+- apiGroups:
+  - ""
+  resources:
+  - pods
+  - pods/status
+  verbs:
+  - get
+  - create
+  - patch
+  - update
+  - watch
+  - list
+  - delete

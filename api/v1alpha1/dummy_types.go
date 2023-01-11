@@ -32,13 +32,16 @@ type DummySpec struct {
 // DummyStatus defines the observed state of Dummy
 type DummyStatus struct {
 	// SpecEcho is a status field that reflects the value spec.message field
-	SpecEcho string `json:"spececho,omitempty"`
+	SpecEcho string `json:"specEcho,omitempty"`
 	// PodStatus reflects the current status of the underlined Pod resource for the CRD
 	PodStatus string `json:"podStatus,omitempty"`
 }
 
+// +k8s:openapi-gen=true
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
+// +kubebuilder:printcolumn:name="SpecEcho",type="string",JSONPath=".status.specEcho"
+// +kubebuilder:printcolumn:name="PodStatus",type="string",JSONPath=".status.podStatus"
 
 // Dummy is the Schema for the dummies API
 type Dummy struct {

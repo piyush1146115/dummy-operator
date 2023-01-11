@@ -81,8 +81,19 @@ func (r *DummyReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 	dum.Status.PodStatus = string(pod.Status.Phase)
 	dum.Status.SpecEcho = dum.Spec.Message
 
-	r.updateStatus(ctx, dum)
-	return ctrl.Result{}, nil
+	//r.updateStatus(ctx, dum)
+	//_, _, err := kmc.PatchStatus(
+	//	ctx,
+	//	r.Client,
+	//	dum,
+	//	func(obj client.Object) client.Object {
+	//		in := obj.(*dummyapi.Dummy)
+	//		in.Status = dum.Status
+	//		return in
+	//	},
+	//)
+
+	return ctrl.Result{}, r.Client.Status().Update(ctx, dum)
 }
 
 func (r *DummyReconciler) createOrPatchPod(ctx context.Context, meta metav1.ObjectMeta, owner *metav1.OwnerReference) error {
@@ -94,12 +105,10 @@ func (r *DummyReconciler) createOrPatchPod(ctx context.Context, meta metav1.Obje
 		Spec: v1.PodSpec{
 			Containers: []v1.Container{
 				v1.Container{
-					Name:  "nginx",
-					Image: "nginx",
-					Command: []string{
-						"bin/sh",
-						"sleep 360000",
-					},
+					Name:    "nginx",
+					Image:   "nginx",
+					Command: []string{"sleep"},
+					Args:    []string{"360000"},
 				},
 			},
 		},
@@ -127,7 +136,7 @@ func (r *DummyReconciler) updateStatus(ctx context.Context, dum *dummyapi.Dummy)
 	_, _, err := kmc.PatchStatus(
 		ctx,
 		r.Client,
-		dum.DeepCopy(),
+		dum,
 		func(obj client.Object) client.Object {
 			in := obj.(*dummyapi.Dummy)
 			in.Status = dum.Status

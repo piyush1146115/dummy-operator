@@ -1,0 +1,33 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: manager-role
+rules:
+- apiGroups:
+  - interview.com
+  resources:
+  - dummies
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - interview.com
+  resources:
+  - dummies/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - interview.com
+  resources:
+  - dummies/status
+  verbs:
+  - get
+  - patch
+  - update
