@@ -32,8 +32,10 @@ type DummySpec struct {
 // DummyStatus defines the observed state of Dummy
 type DummyStatus struct {
 	// SpecEcho is a status field that reflects the value spec.message field
+	// +optional
 	SpecEcho string `json:"specEcho,omitempty"`
 	// PodStatus reflects the current status of the underlined Pod resource for the CRD
+	// +optional
 	PodStatus string `json:"podStatus,omitempty"`
 }
 

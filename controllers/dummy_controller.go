@@ -19,6 +19,7 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"github.com/go-logr/logr"
 	dummyapi "github.com/piyush1146115/dummy-operator/api/v1alpha1"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -34,6 +35,7 @@ import (
 type DummyReconciler struct {
 	client.Client
 	Scheme *runtime.Scheme
+	log    logr.Logger
 }
 
 //+kubebuilder:rbac:groups=interview.com,resources=dummies,verbs=get;list;watch;create;update;patch;delete
@@ -50,11 +52,11 @@ type DummyReconciler struct {
 // For more details, check Reconcile and its Result here:
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.13.1/pkg/reconcile
 func (r *DummyReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	logger := log.FromContext(ctx)
+	r.log = log.FromContext(ctx)
 
 	dum := &dummyapi.Dummy{}
 	if err := r.Client.Get(ctx, req.NamespacedName, dum); err != nil {
-		logger.Error(err, "failed to get Dummy")
+		r.log.Error(err, "failed to get Dummy")
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
@@ -114,7 +116,14 @@ func (r *DummyReconciler) createOrPatchPod(ctx context.Context, meta metav1.Obje
 		},
 	}
 
-	_, _, err := kmc.CreateOrPatch(
+	err := r.Client.Get(ctx, client.ObjectKeyFromObject(pod), pod)
+	if err == nil {
+		r.log.Info("pod already exists, returning")
+		return nil
+	}
+
+	r.log.Info("Creating/patching pods", "name", pod.Name, "namespace", pod.Namespace)
+	_, _, err = kmc.CreateOrPatch(
 		ctx,
 		r.Client,
 		pod.DeepCopy(),

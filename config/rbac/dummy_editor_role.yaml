@@ -15,6 +15,7 @@ rules:
   - interview.com
   resources:
   - dummies
+  - dummies/status
   verbs:
   - create
   - delete
@@ -23,12 +24,6 @@ rules:
   - patch
   - update
   - watch
-- apiGroups:
-  - interview.com
-  resources:
-  - dummies/status
-  verbs:
-  - get
 - apiGroups:
   - ""
   resources:

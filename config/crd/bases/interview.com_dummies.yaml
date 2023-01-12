@@ -15,7 +15,14 @@ spec:
     singular: dummy
   scope: Namespaced
   versions:
-  - name: v1alpha1
+  - additionalPrinterColumns:
+    - jsonPath: .status.specEcho
+      name: SpecEcho
+      type: string
+    - jsonPath: .status.podStatus
+      name: PodStatus
+      type: string
+    name: v1alpha1
     schema:
       openAPIV3Schema:
         description: Dummy is the Schema for the dummies API
@@ -46,7 +53,7 @@ spec:
                 description: PodStatus reflects the current status of the underlined
                   Pod resource for the CRD
                 type: string
-              spececho:
+              specEcho:
                 description: SpecEcho is a status field that reflects the value spec.message
                   field
                 type: string
