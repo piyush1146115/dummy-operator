@@ -6,10 +6,22 @@ You can install the operator in your local or cloud cluster by
 following the simple steps from below:
 
 - Clone this repository to your local environment:
-`git clone https://github.com/piyush1146115/dummy-operator.git`
+```bash
+$ git clone https://github.com/piyush1146115/dummy-operator.git`
+```
 - Change your current directory to the `dummy-operator`
-- Install the dummy CRD: `make install`
-- Deploy the dummy-operator to your cluster `make deploy IMG=piyush1146115/dummy-operator:latest`
+```bash
+$ cd dummy-operator
+```
+- Install the dummy CRD
+```bash
+$ make install
+```
+
+- Deploy the dummy-operator to your cluster
+```bash
+$ make deploy IMG=piyush1146115/dummy-operator:latest`
+```
 
 If all of the above steps were successful, you should see the dummy-operator
 running in your kubernetes cluster.
@@ -30,7 +42,7 @@ spec:
 
 You can also apply the manifest by applying the manifest from `/../dummy-operator/config/samples/dummy.yaml`
 
-To get the current status of dummy objects in your default namespace:
+To get the current status of dummy objects in your `default` namespace:
 ```
 $ kubectl get dummy -n default
 

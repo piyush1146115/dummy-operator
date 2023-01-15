@@ -19,8 +19,10 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"github.com/go-logr/logr"
-	dummyapi "github.com/piyush1146115/dummy-operator/api/v1alpha1"
+
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -29,6 +31,8 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
+
+	dummyapi "github.com/piyush1146115/dummy-operator/api/v1alpha1"
 )
 
 // DummyReconciler reconciles a Dummy object
@@ -83,19 +87,11 @@ func (r *DummyReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 	dum.Status.PodStatus = string(pod.Status.Phase)
 	dum.Status.SpecEcho = dum.Spec.Message
 
-	//r.updateStatus(ctx, dum)
-	//_, _, err := kmc.PatchStatus(
-	//	ctx,
-	//	r.Client,
-	//	dum,
-	//	func(obj client.Object) client.Object {
-	//		in := obj.(*dummyapi.Dummy)
-	//		in.Status = dum.Status
-	//		return in
-	//	},
-	//)
+	if err := r.Client.Status().Update(ctx, dum); err != nil {
+		return ctrl.Result{}, fmt.Errorf("failed to update status: %w", err)
+	}
 
-	return ctrl.Result{}, r.Client.Status().Update(ctx, dum)
+	return ctrl.Result{RequeueAfter: 10 * time.Second}, nil
 }
 
 func (r *DummyReconciler) createOrPatchPod(ctx context.Context, meta metav1.ObjectMeta, owner *metav1.OwnerReference) error {
@@ -110,7 +106,7 @@ func (r *DummyReconciler) createOrPatchPod(ctx context.Context, meta metav1.Obje
 					Name:    "nginx",
 					Image:   "nginx",
 					Command: []string{"sleep"},
-					Args:    []string{"360000"},
+					Args:    []string{"infinity"},
 				},
 			},
 		},
@@ -118,7 +114,6 @@ func (r *DummyReconciler) createOrPatchPod(ctx context.Context, meta metav1.Obje
 
 	err := r.Client.Get(ctx, client.ObjectKeyFromObject(pod), pod)
 	if err == nil {
-		r.log.Info("pod already exists, returning")
 		return nil
 	}
 
@@ -139,21 +134,6 @@ func (r *DummyReconciler) createOrPatchPod(ctx context.Context, meta metav1.Obje
 	)
 
 	return err
-}
-
-func (r *DummyReconciler) updateStatus(ctx context.Context, dum *dummyapi.Dummy) error {
-	_, _, err := kmc.PatchStatus(
-		ctx,
-		r.Client,
-		dum,
-		func(obj client.Object) client.Object {
-			in := obj.(*dummyapi.Dummy)
-			in.Status = dum.Status
-			return in
-		},
-	)
-
-	return client.IgnoreNotFound(err)
 }
 
 // SetupWithManager sets up the controller with the Manager.
