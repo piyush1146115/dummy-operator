@@ -7,7 +7,7 @@ following the simple steps from below:
 
 - Clone this repository to your local environment:
 ```bash
-$ git clone https://github.com/piyush1146115/dummy-operator.git`
+$ git clone https://github.com/piyush1146115/dummy-operator.git
 ```
 - Change your current directory to the `dummy-operator`
 ```bash
@@ -20,7 +20,7 @@ $ make install
 
 - Deploy the dummy-operator to your cluster
 ```bash
-$ make deploy IMG=piyush1146115/dummy-operator:latest`
+$ make deploy IMG=piyush1146115/dummy-operator:latest
 ```
 
 If all of the above steps were successful, you should see the dummy-operator
@@ -40,7 +40,7 @@ spec:
   message: "I'm just a dummy"
 ```
 
-You can also apply the manifest by applying the manifest from `/../dummy-operator/config/samples/dummy.yaml`
+You can also apply the manifest by applying the manifest from `/dummy-operator/config/samples/dummy.yaml`
 
 To get the current status of dummy objects in your `default` namespace:
 ```
