@@ -1,7 +1,7 @@
 # dummy-operator
 A dummy Kubernetes operator
 
-## Installing and deploying the `dummy-operator`
+## Install and deploy
 You can install the operator in your local or cloud cluster by
 following the simple steps from below:
 
@@ -26,7 +26,7 @@ $ make deploy IMG=piyush1146115/dummy-operator:latest
 If all of the above steps were successful, you should see the dummy-operator
 running in your kubernetes cluster.
 
-## Testing
+## Usage
 
 Create a dummy object in your cluster by applying the following manifest:
 
